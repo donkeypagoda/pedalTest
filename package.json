@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/donkeypagoda/pedalTest/issues"
   },
-  "homepage": "https://github.com/donkeypagoda/pedalTest#readme"
+  "homepage": "https://github.com/donkeypagoda/pedalTest#readme",
+  "dependencies": {
+    "lite-server": "^2.3.0"
+  }
 }
