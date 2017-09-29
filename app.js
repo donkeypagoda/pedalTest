@@ -13,18 +13,20 @@ if (navigator.mediaDevices.getUserMedia) {
 
     let feedback = audioCtx.createGain();
 
+    let delayMute = audioCtx.createGain();
+
     feedback.gain.value = 0.0;
 
     // routing:
-    if (delayEngage) {
-    source.connect(delay);
-    delay.connect(audioCtx.destination);
-    delay.connect(feedback);
-    feedback.connect(delay);
-    }
-    if (!delayEngage) {
-    source.connect(audioCtx.destination);
-    }
+    // if (delayEngage) {
+    // source.connect(delay);
+    // delay.connect(audioCtx.destination);
+    // delay.connect(feedback);
+    // feedback.connect(delay);
+    // }
+    // if (!delayEngage) {
+    // source.connect(audioCtx.destination);
+    // }
 
     time.oninput = () => {
       delay.delayTime.value = time.value;
@@ -35,6 +37,16 @@ if (navigator.mediaDevices.getUserMedia) {
     };
     delayBypass.onchange = () => {
       delayEngage = !delayEngage
+      console.log(delayEngage);
+      if (delayEngage) {
+      source.connect(delay);
+      delay.connect(audioCtx.destination);
+      delay.connect(feedback);
+      feedback.connect(delay);
+      }
+      else {
+      source.connect(audioCtx.destination);
+      }
     }
 
 
