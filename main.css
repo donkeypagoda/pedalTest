@@ -1,0 +1,15 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  background: linear-gradient(#6599ed, #27f6fd)
+}
+
+.unit {
+  border-color: red;
+  border-width: 2px;
+  border-style: solid;
+}
+
+#delayDiv {
+  background-color: brown;
+}
