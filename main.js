@@ -8,6 +8,7 @@ let feedbackBypassStatus = false;
 
 // DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
 let distoAmount = document.querySelector('#distoAmount')
+let distoGain = document.querySelector("#distoGain")
 
 
 
@@ -37,14 +38,23 @@ if (navigator.mediaDevices.getUserMedia) {
 
     disto1.curve = makeDistortionCurve(400);
     disto1.oversample = '4x';
+    let distoGain1 = audioCtx.createGain();
+    let distoGain2 = audioCtx.createGain();
 
     distoAmount.oninput = () => {
       console.log(distoAmount.value);
       disto1.curve = makeDistortionCurve(distoAmount.value)
     }
+    distoGain.oninput = () => {
+      console.log(distoGain.value);
+      distoGain1.gain.value = distoGain.value
+      distoGain2.gain.value = 1 / distoGain.value
+    }
 
 // DISTO ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     source.connect(disto1)
+    disto1.connect(distoGain1)
+    distoGain1.connect(distoGain2)
 
 
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
@@ -92,7 +102,7 @@ if (navigator.mediaDevices.getUserMedia) {
     }
 
 // DELAY ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    disto1.connect(delayMute);
+    distoGain2.connect(delayMute);
     delayMute.connect(delay);
     delay.connect(feedbackMute);
     feedbackMute.connect(feedback);
