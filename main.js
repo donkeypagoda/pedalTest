@@ -1,10 +1,14 @@
-// DOM ELEMENTS AND VARIABLES
+// DELAY UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
 let time = document.querySelector('#delayTime');
 let feedbackSlider = document.querySelector("#delayFeedback");
 let delayBypass = document.querySelector("#delayBypass");
 let delayBypassStatus = false;
 let feedbackBypass = document.querySelector("#feedbackBypass");
 let feedbackBypassStatus = false;
+
+// DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
+let distoAmount = document.querySelector('#distoAmount')
+
 
 
 // THE AUDIO PROCESSESING
@@ -14,6 +18,34 @@ if (navigator.mediaDevices.getUserMedia) {
   .then ((stream) => {
     let audioCtx = new AudioContext();
     let source = audioCtx.createMediaStreamSource(stream);
+
+// DISTO STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
+    let disto1 = audioCtx.createWaveShaper();
+    function makeDistortionCurve(amount) {
+      let k = typeof amount === 'number' ? amount : 50,
+        n_samples = 44100,
+        curve = new Float32Array(n_samples),
+        deg = Math.PI / 180,
+        i = 0,
+        x;
+      for ( ; i < n_samples; ++i ) {
+        x = i * 2 / n_samples - 1;
+        curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+      }
+      return curve;
+    }
+
+    disto1.curve = makeDistortionCurve(400);
+    disto1.oversample = '4x';
+
+    distoAmount.oninput = () => {
+      console.log(distoAmount.value);
+      disto1.curve = makeDistortionCurve(distoAmount.value)
+    }
+
+// DISTO ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
+    source.connect(disto1)
+
 
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
     let delay = audioCtx.createDelay();
@@ -60,7 +92,7 @@ if (navigator.mediaDevices.getUserMedia) {
     }
 
 // DELAY ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    source.connect(delayMute);
+    disto1.connect(delayMute);
     delayMute.connect(delay);
     delay.connect(feedbackMute);
     feedbackMute.connect(feedback);
