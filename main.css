@@ -11,5 +11,9 @@ html, body {
 }
 
 #delayDiv {
-  background-color: brown;
+  background-color: #0a48ad;
+}
+
+#distDiv {
+  background-color: #ad090c;
 }
