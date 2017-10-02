@@ -7,20 +7,27 @@ let feedbackBypass = document.querySelector("#feedbackBypass");
 let feedbackBypassStatus = false;
 
 // DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
-let distoAmount = document.querySelector('#distoAmount')
-let distoGain = document.querySelector("#distoGain")
-
-// var p = navigator.mediaDevices.getUserMedia({ audio: { latency: 0.02, echoCancellation: false, mozNoiseSuppression: false, mozAutoGainControl: false} });
+let distoSat = document.querySelector('#distoSat')
+let distoOverdrive = document.querySelector("#distoOverdrive")
+let distoSustain = document.querySelector("#distoSustain")
+let distoBlend = document.querySelector("#distoBlend")
+let distoHPFfreq = document.querySelector("#distoHPFfreq")
 
 // THE AUDIO PROCESSESING
 if (navigator.mediaDevices.getUserMedia) {
   console.log("yah buddy getUserMedia is down with the plan");
-  navigator.mediaDevices.getUserMedia({audio: { latency: 0.01, echoCancellation: false, mozNoiseSuppression: false, mozAutoGainControl: false }})
+  navigator.mediaDevices.getUserMedia({audio: { latency: 0.01,
+                                                echoCancellation: false,
+                                                mozNoiseSuppression: false,
+                                                mozAutoGainControl: false
+                                      }})
   .then ((stream) => {
     let audioCtx = new AudioContext();
     let source = audioCtx.createMediaStreamSource(stream);
 
 // DISTO STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
+    let distoOver = audioCtx.createGain();
+
     let disto1 = audioCtx.createWaveShaper();
     function makeDistortionCurve(amount) {
       let k = typeof amount === 'number' ? amount : 50,
@@ -35,26 +42,51 @@ if (navigator.mediaDevices.getUserMedia) {
       }
       return curve;
     }
-
     disto1.curve = makeDistortionCurve(400);
     disto1.oversample = '4x';
-    let distoGain1 = audioCtx.createGain();
-    let distoGain2 = audioCtx.createGain();
 
-    distoAmount.oninput = () => {
-      console.log(distoAmount.value);
-      disto1.curve = makeDistortionCurve(distoAmount.value)
+    let distoSust = audioCtx.createGain();
+    let distoMix1 = audioCtx.createGain();
+    let distoMix2 = audioCtx.createGain();
+    let distoSplit = audioCtx.createChannelSplitter(2);
+    let distoHPF = audioCtx.createBiquadFilter();
+    distoHPF.type = "highpass"
+
+    distoSat.oninput = () => {
+      console.log(distoSat.value);
+      disto1.curve = makeDistortionCurve(parseFloat(distoSat.value));
+    };
+    distoOverdrive.oninput = () => {
+      console.log(parseFloat(distoOverdrive.value));
+      distoOver.gain.value = parseFloat(distoOverdrive.value);
+    };
+    distoSustain.oninput = () => {
+      distoSust.gain.value = parseFloat(distoSustain.value);
+    };
+
+    distoBlend.oninput = () => {
+      distoMix1.gain.value = parseFloat(distoBlend.value);
+      distoMix2.gain.value = 1 / parseFloat(distoBlend.value);
     }
-    distoGain.oninput = () => {
-      console.log(distoGain.value);
-      distoGain1.gain.value = distoGain.value
-      distoGain2.gain.value = 1 / distoGain.value
+
+    distoHPFfreq.oninput = () => {
+      console.log(parseFloat(distoHPFfreq.value));
+      distoHPF.frequency.value = parseFloat(distoHPFfreq.value);
+
     }
 
 // DISTO ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     source.connect(disto1)
-    disto1.connect(distoGain1)
-    distoGain1.connect(audioCtx.destination)
+    // distoSplit.connect(distoOver, 0)
+    // distoOver.connect(disto1)
+    disto1.connect(distoSust)
+    distoSust.connect(disto1)
+    // disto1.connect(distoMix1)
+    // distoSplit.connect(distoMix2, 1)
+    disto1.connect(distoHPF)
+    distoHPF.connect(audioCtx.destination)
+    // distoMix1.connect(audioCtx.destination)
+    // distoMix2.connect(audioCtx.destination)
 
 
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
