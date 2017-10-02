@@ -10,12 +10,12 @@ let feedbackBypassStatus = false;
 let distoAmount = document.querySelector('#distoAmount')
 let distoGain = document.querySelector("#distoGain")
 
-
+// var p = navigator.mediaDevices.getUserMedia({ audio: { latency: 0.02, echoCancellation: false, mozNoiseSuppression: false, mozAutoGainControl: false} });
 
 // THE AUDIO PROCESSESING
 if (navigator.mediaDevices.getUserMedia) {
   console.log("yah buddy getUserMedia is down with the plan");
-  navigator.mediaDevices.getUserMedia({audio: true})
+  navigator.mediaDevices.getUserMedia({audio: { latency: 0.01, echoCancellation: false, mozNoiseSuppression: false, mozAutoGainControl: false }})
   .then ((stream) => {
     let audioCtx = new AudioContext();
     let source = audioCtx.createMediaStreamSource(stream);
@@ -54,7 +54,7 @@ if (navigator.mediaDevices.getUserMedia) {
 // DISTO ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     source.connect(disto1)
     disto1.connect(distoGain1)
-    distoGain1.connect(distoGain2)
+    distoGain1.connect(audioCtx.destination)
 
 
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
@@ -102,12 +102,12 @@ if (navigator.mediaDevices.getUserMedia) {
     }
 
 // DELAY ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    distoGain2.connect(delayMute);
-    delayMute.connect(delay);
-    delay.connect(feedbackMute);
-    feedbackMute.connect(feedback);
-    feedback.connect(delay);
-    delay.connect(audioCtx.destination);
+    // distoGain2.connect(delayMute);
+    // delayMute.connect(delay);
+    // delay.connect(feedbackMute);
+    // feedbackMute.connect(feedback);
+    // feedback.connect(delay);
+    // delay.connect(audioCtx.destination);
 
 
   })
