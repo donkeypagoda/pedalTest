@@ -1,6 +1,7 @@
 // DELAY UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
 let time = document.querySelector('#delayTime');
 let feedbackSlider = document.querySelector("#delayFeedback");
+let delayWetDryMix = document.querySelector("#delayWetDryMix");
 let delayBypass = document.querySelector("#delayBypass");
 let delayBypassStatus = false;
 let feedbackBypass = document.querySelector("#feedbackBypass");
@@ -52,20 +53,20 @@ if (navigator.mediaDevices.getUserMedia) {
     distoLPF.frequency.value = 15000;
 
     distoSat.oninput = () => {
-      console.log(distoSat.value);
+      // console.log(parseFloat(distoSat.value));
       disto1.curve = makeDistortionCurve(parseFloat(distoSat.value));
     };
     distoOverdrive.oninput = () => {
-      console.log(parseFloat(distoOverdrive.value));
+      // console.log(parseFloat(distoOverdrive.value));
       distoOver.gain.value = parseFloat(distoOverdrive.value);
     };
 
     distoHPFfreq.oninput = () => {
-      console.log(parseFloat(distoHPFfreq.value));
+      // console.log(parseFloat(distoHPFfreq.value));
       distoHPF.frequency.value = parseFloat(distoHPFfreq.value);
     }
     distoLPFfreq.oninput = () => {
-      console.log(parseFloat(distoLPFfreq.value));
+      // console.log(parseFloat(distoLPFfreq.value));
       distoLPF.frequency.value = parseFloat(distoLPFfreq.value);
     }
 
@@ -74,7 +75,6 @@ if (navigator.mediaDevices.getUserMedia) {
     distoOver.connect(disto1)
     disto1.connect(distoHPF)
     distoHPF.connect(distoLPF)
-    distoLPF.connect(audioCtx.destination)
 
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
     let delay = audioCtx.createDelay();
@@ -89,6 +89,9 @@ if (navigator.mediaDevices.getUserMedia) {
     let feedbackMute = audioCtx.createGain();
     feedbackMute.gain.value = 1.0
 
+    let delayPassThru = audioCtx.createGain();
+    delayPassThru.gain.value = 0.5
+
     // let delaySplitter = audioCtx.createChannelSplitter(2)
     // let delayMerger = audioCtx.createChannelMerger(2)
 
@@ -99,9 +102,13 @@ if (navigator.mediaDevices.getUserMedia) {
       // console.log(feedbackSlider.value);
       feedback.gain.value = feedbackSlider.value;
     };
+    delayWetDryMix.oninput = () => {
+      delayMute.gain.value = 1 / parseFloat(delayWetDryMix.value)
+      delayPassThru.gain.value = parseFloat(delayWetDryMix.value)
+    }
     delayBypass.onchange = () => {
       delayBypassStatus = !delayBypassStatus;
-      console.log(delayBypassStatus);
+      // console.log(delayBypassStatus);
       if (delayBypassStatus) {
         delayMute.gain.value = 0.0;
       }
@@ -111,7 +118,7 @@ if (navigator.mediaDevices.getUserMedia) {
     }
     feedbackBypass.onchange = () => {
       feedbackBypassStatus = !feedbackBypassStatus;
-      console.log(feedbackBypassStatus);
+      // console.log(feedbackBypassStatus);
       if (feedbackBypassStatus) {
         feedbackMute.gain.value = 0.0;
       }
@@ -121,12 +128,14 @@ if (navigator.mediaDevices.getUserMedia) {
     }
 
 // DELAY ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    // distoGain2.connect(delayMute);
-    // delayMute.connect(delay);
-    // delay.connect(feedbackMute);
-    // feedbackMute.connect(feedback);
-    // feedback.connect(delay);
-    // delay.connect(audioCtx.destination);
+    distoLPF.connect(delayMute);
+    distoLPF.connect(delayPassThru);
+    delayMute.connect(delay);
+    delay.connect(feedbackMute);
+    feedbackMute.connect(feedback);
+    feedback.connect(delay);
+    delay.connect(audioCtx.destination);
+    delayPassThru.connect(audioCtx.destination);
 
 
   })
