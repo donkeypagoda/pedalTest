@@ -92,6 +92,9 @@ if (navigator.mediaDevices.getUserMedia) {
     let delayPassThru = audioCtx.createGain();
     delayPassThru.gain.value = 0.5
 
+    let delayMixMute = audioCtx.createGain();
+    delayMixMute.gain.value = 0.5
+
     // let delaySplitter = audioCtx.createChannelSplitter(2)
     // let delayMerger = audioCtx.createChannelMerger(2)
 
@@ -103,7 +106,9 @@ if (navigator.mediaDevices.getUserMedia) {
       feedback.gain.value = feedbackSlider.value;
     };
     delayWetDryMix.oninput = () => {
-      delayMute.gain.value = 1 / parseFloat(delayWetDryMix.value)
+      console.log(parseFloat(0.01 / delayWetDryMix.value));
+      console.log(parseFloat(delayWetDryMix.value));
+      delayMixMute.gain.value = 0.01 / parseFloat(delayWetDryMix.value)
       delayPassThru.gain.value = parseFloat(delayWetDryMix.value)
     }
     delayBypass.onchange = () => {
@@ -134,7 +139,8 @@ if (navigator.mediaDevices.getUserMedia) {
     delay.connect(feedbackMute);
     feedbackMute.connect(feedback);
     feedback.connect(delay);
-    delay.connect(audioCtx.destination);
+    delay.connect(delayMixMute);
+    delayMixMute.connect(audioCtx.destination)
     delayPassThru.connect(audioCtx.destination);
 
 
