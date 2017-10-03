@@ -12,6 +12,8 @@ let distoSat = document.querySelector('#distoSat')
 let distoOverdrive = document.querySelector("#distoOverdrive")
 let distoHPFfreq = document.querySelector("#distoHPFfreq")
 let distoLPFfreq = document.querySelector("#distoLPFfreq")
+let distoBypass = document.querySelector("#distoBypass")
+let distoBypassStatus = false;
 
 // THE AUDIO PROCESSESING
 if (navigator.mediaDevices.getUserMedia) {
@@ -52,6 +54,7 @@ if (navigator.mediaDevices.getUserMedia) {
     distoLPF.type = "lowpass"
     distoLPF.frequency.value = 15000;
 
+
     distoSat.oninput = () => {
       // console.log(parseFloat(distoSat.value));
       disto1.curve = makeDistortionCurve(parseFloat(distoSat.value));
@@ -69,15 +72,26 @@ if (navigator.mediaDevices.getUserMedia) {
       // console.log(parseFloat(distoLPFfreq.value));
       distoLPF.frequency.value = parseFloat(distoLPFfreq.value);
     }
+    distoBypass.oninput = (event) => {
+      distoBypassStatus = !distoBypassStatus;
+      if (distoBypassStatus) {
+        // distoOver.gain.value = 0.0;
+      }
+      else {
+        // distoBypassGain.gain.value = 1.0;
+      }
+    }
 
 // DISTO ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
+
     source.connect(distoOver)
     distoOver.connect(disto1)
     disto1.connect(distoHPF)
     distoHPF.connect(distoLPF)
 
+
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
-    let delay = audioCtx.createDelay(10.0);
+    let delay = audioCtx.createDelay(10.0); // this might be too long, check for memory slowness
     delay.delayTime.value = "0.25"
 
     let feedback = audioCtx.createGain();

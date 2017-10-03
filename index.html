@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="main.css">
   </head>
   <body class="gradient">
-
+    <!-- Delay -->
     <div id="delayDiv" class="unit"><h1>Delay</h1>
       <hr>
       <div>
@@ -40,7 +40,7 @@
     <div>
       <br>
     </div>
-
+    <!-- distortion -->
     <div id="distoDiv" class="unit"><h1>Distortion</h1>
       <hr>
       <div>
@@ -61,6 +61,11 @@
       <div>
         <label>LPF freq
           <input id="distoLPFfreq" type="range" min="2000" max="15000" step="25" value="15000">
+        </label>
+      </div>
+      <div>
+        <label>Distortion Engaged?
+          <input id="distoBypass" type="checkbox" checked>
         </label>
       </div>
     </div>
