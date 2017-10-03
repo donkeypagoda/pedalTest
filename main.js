@@ -1,3 +1,11 @@
+// DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
+let distoSat = document.querySelector('#distoSat')
+let distoOverdrive = document.querySelector("#distoOverdrive")
+let distoHPFfreq = document.querySelector("#distoHPFfreq")
+let distoLPFfreq = document.querySelector("#distoLPFfreq")
+let distoBypass = document.querySelector("#distoBypass")
+let distoBypassStatus = false;
+
 // DELAY UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
 let time = document.querySelector('#delayTime');
 let feedbackSlider = document.querySelector("#delayFeedback");
@@ -7,13 +15,12 @@ let delayBypassStatus = false;
 let feedbackBypass = document.querySelector("#feedbackBypass");
 let feedbackBypassStatus = false;
 
-// DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
-let distoSat = document.querySelector('#distoSat')
-let distoOverdrive = document.querySelector("#distoOverdrive")
-let distoHPFfreq = document.querySelector("#distoHPFfreq")
-let distoLPFfreq = document.querySelector("#distoLPFfreq")
-let distoBypass = document.querySelector("#distoBypass")
-let distoBypassStatus = false;
+// PANNER UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
+let pannerSpeed = document.querySelector("#pannerSpeed");
+let pannerWidth = document.querySelector("#pannerWidth");
+let pannerStartStop = document.querySelector("#pannerStartStop");
+let pannerBypass = document.querySelector("#pannerBypass");
+
 
 // THE AUDIO PROCESSESING
 if (navigator.mediaDevices.getUserMedia) {
@@ -26,6 +33,7 @@ if (navigator.mediaDevices.getUserMedia) {
   .then ((stream) => {
     let audioCtx = new AudioContext();
     let source = audioCtx.createMediaStreamSource(stream);
+
 
 // DISTO STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
     let distoOver = audioCtx.createGain();
@@ -157,6 +165,18 @@ if (navigator.mediaDevices.getUserMedia) {
     delay.connect(delayMixMute);
     delayMixMute.connect(audioCtx.destination)
     delayPassThru.connect(audioCtx.destination);
+
+
+
+// AUTO PAN STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
+    let panner = audioCtx.createPanner();
+    panner.panningModel = 'HRTF';
+    panner.distanceModel = 'inverse';
+    panner.refDistance = 1;
+    panner.maxDistance = 10000;
+    panner.rolloffFactor = 1;
+    // panner.coneInnerAngle = 360;
+
 
 
   })
