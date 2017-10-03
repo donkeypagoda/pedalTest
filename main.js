@@ -77,7 +77,7 @@ if (navigator.mediaDevices.getUserMedia) {
     distoHPF.connect(distoLPF)
 
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
-    let delay = audioCtx.createDelay();
+    let delay = audioCtx.createDelay(10.0);
     delay.delayTime.value = "0.25"
 
     let feedback = audioCtx.createGain();
@@ -99,7 +99,8 @@ if (navigator.mediaDevices.getUserMedia) {
     // let delayMerger = audioCtx.createChannelMerger(2)
 
     time.oninput = () => {
-      delay.delayTime.value = time.value;
+      console.log(parseFloat(time.value));
+      delay.delayTime.value = parseFloat(time.value);
     };
     feedbackSlider.oninput = () => {
       // console.log(feedbackSlider.value);
