@@ -9,9 +9,8 @@ let feedbackBypassStatus = false;
 // DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
 let distoSat = document.querySelector('#distoSat')
 let distoOverdrive = document.querySelector("#distoOverdrive")
-let distoSustain = document.querySelector("#distoSustain")
-let distoBlend = document.querySelector("#distoBlend")
 let distoHPFfreq = document.querySelector("#distoHPFfreq")
+let distoLPFfreq = document.querySelector("#distoLPFfreq")
 
 // THE AUDIO PROCESSESING
 if (navigator.mediaDevices.getUserMedia) {
@@ -45,12 +44,12 @@ if (navigator.mediaDevices.getUserMedia) {
     disto1.curve = makeDistortionCurve(400);
     disto1.oversample = '4x';
 
-    let distoSust = audioCtx.createGain();
-    let distoMix1 = audioCtx.createGain();
-    let distoMix2 = audioCtx.createGain();
-    let distoSplit = audioCtx.createChannelSplitter(2);
     let distoHPF = audioCtx.createBiquadFilter();
     distoHPF.type = "highpass"
+    distoHPF.frequency.value = 60;
+    let distoLPF = audioCtx.createBiquadFilter();
+    distoLPF.type = "lowpass"
+    distoLPF.frequency.value = 15000;
 
     distoSat.oninput = () => {
       console.log(distoSat.value);
@@ -60,34 +59,22 @@ if (navigator.mediaDevices.getUserMedia) {
       console.log(parseFloat(distoOverdrive.value));
       distoOver.gain.value = parseFloat(distoOverdrive.value);
     };
-    distoSustain.oninput = () => {
-      distoSust.gain.value = parseFloat(distoSustain.value);
-    };
-
-    distoBlend.oninput = () => {
-      distoMix1.gain.value = parseFloat(distoBlend.value);
-      distoMix2.gain.value = 1 / parseFloat(distoBlend.value);
-    }
 
     distoHPFfreq.oninput = () => {
       console.log(parseFloat(distoHPFfreq.value));
       distoHPF.frequency.value = parseFloat(distoHPFfreq.value);
-
+    }
+    distoLPFfreq.oninput = () => {
+      console.log(parseFloat(distoLPFfreq.value));
+      distoLPF.frequency.value = parseFloat(distoLPFfreq.value);
     }
 
 // DISTO ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    source.connect(disto1)
-    // distoSplit.connect(distoOver, 0)
-    // distoOver.connect(disto1)
-    disto1.connect(distoSust)
-    distoSust.connect(disto1)
-    // disto1.connect(distoMix1)
-    // distoSplit.connect(distoMix2, 1)
+    source.connect(distoOver)
+    distoOver.connect(disto1)
     disto1.connect(distoHPF)
-    distoHPF.connect(audioCtx.destination)
-    // distoMix1.connect(audioCtx.destination)
-    // distoMix2.connect(audioCtx.destination)
-
+    distoHPF.connect(distoLPF)
+    distoLPF.connect(audioCtx.destination)
 
 // DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
     let delay = audioCtx.createDelay();
