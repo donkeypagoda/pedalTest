@@ -44,6 +44,7 @@ class Delay {
       this.feedback.gain.value = this.feedbackSlider.value;
     };
     this.delayWetDryMix.oninput = () => {
+      // these numbers don't work, there is a huge deadzone in the middle, where both are too quiet
       console.log(parseFloat(0.01 / this.delayWetDryMix.value));
       console.log(parseFloat(this.delayWetDryMix.value));
       this.delayMixMute.gain.value = 0.01 / parseFloat(this.delayWetDryMix.value)
