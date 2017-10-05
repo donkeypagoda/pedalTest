@@ -1,49 +1,34 @@
-// PANNER UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
-let pannerSpeed = document.querySelector("#pannerSpeed");
-let pannerWidth = document.querySelector("#pannerWidth");
-let pannerStartStop = document.querySelector("#pannerStartStop");
-let pannerBypass = document.querySelector("#pannerBypass");
+class Panner {
+  constructor(audioCtx, input, output){
+    this.audioCtx = audioCtx;
+    this.input = input;
+    this.output = output;
+    // UI STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
+    this.pannerSpeed = document.querySelector("#pannerSpeed");
+    this.pannerWidth = document.querySelector("#pannerWidth");
+    this.pannerStartStop = document.querySelector("#pannerStartStop");
+    this.pannerBypass = document.querySelector("#pannerBypass");
+    // PANNER GUTS XXXXXXXXXXXXXXXXXXXXXXXXX
+    this.panner = audioCtx.createStereoPanner();
 
+    this.pannerOsc = this.audioCtx.createOscillator();
+    this.pannerOsc.start
 
-// THE AUDIO PROCESSESING
-if (navigator.mediaDevices.getUserMedia) {
-  console.log("yah buddy getUserMedia is down with the plan");
-  navigator.mediaDevices.getUserMedia({audio: { latency: 0.01,
-                                                echoCancellation: false,
-                                                mozNoiseSuppression: false,
-                                                mozAutoGainControl: false
-                                      }})
-  .then ((stream) => {
-    let audioCtx = new AudioContext();
-    let source = audioCtx.createMediaStreamSource(stream);
-
-// AUTO PAN STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
-    let panner = audioCtx.createPanner();
-    panner.panningModel = 'HRTF';
-    panner.distanceModel = 'inverse';
-    panner.refDistance = 1;
-    panner.maxDistance = 10000;
-    panner.rolloffFactor = 1;
-    // panner.coneInnerAngle = 360;
-
-    let pannerOsc = audioCtx.createOscillator();
-    pannerSpeed.oninput = () => {
-      pannerOsc.frequency.value = parseFloat(pannerSpeed.value);
-
+    // console.log(this.panner.positionX);
+    // this.pannerSpeed.oninput = () => {
+    //   this.pannerOsc.frequency.value = parseFloat(this.pannerSpeed.value);
+    //   this.pannerOsc.connect(this.panner.positionX)
+    //
+    //   console.log(this.pannerOsc.frequency.value);
+    // }
+    // temporary bullshit to try and figureout why the osciallator isn't changing the
+    this.pannerWidth.oninput = () => {
+      this.panner.pan.value = parseFloat(this.pannerWidth.value)
+      console.log(this.panner.pan.value);
     }
-    console.log(pannerOsc);
-    console.log(panner.positionX);
-    pannerOsc.connect(panner.positionX)
-    pannerOsc.start
+    // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
+    this.input.connect(this.panner)
+    this.panner.connect(this.audioCtx.destination)
 
-    source.connect(panner)
-    panner.connect(audioCtx.destination)
-
-  })
-  .catch(function(err) {
-        console.log('The following gUM error occured: ' + err);
-    });
-}
-else {
-    console.log('getUserMedia not supported round deez partz');
+  }
 }
