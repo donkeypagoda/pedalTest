@@ -163,8 +163,8 @@ if (navigator.mediaDevices.getUserMedia) {
     feedbackMute.connect(feedback);
     feedback.connect(delay);
     delay.connect(delayMixMute);
-    delayMixMute.connect(audioCtx.destination)
-    delayPassThru.connect(audioCtx.destination);
+    // delayMixMute.connect(audioCtx.destination)
+    // delayPassThru.connect(audioCtx.destination);
 
 
 
@@ -176,6 +176,22 @@ if (navigator.mediaDevices.getUserMedia) {
     panner.maxDistance = 10000;
     panner.rolloffFactor = 1;
     // panner.coneInnerAngle = 360;
+
+    let pannerOsc = audioCtx.createOscillator();
+    pannerSpeed.oninput = () => {
+      pannerOsc.frequency.value = parseFloat(pannerSpeed.value);
+
+    }
+    console.log(pannerOsc);
+    console.log(panner.positionX);
+    pannerOsc.connect(panner.positionX)
+    pannerOsc.start
+
+    delayMixMute.connect(panner)
+    panner.connect(audioCtx.destination)
+
+
+
 
 
 
