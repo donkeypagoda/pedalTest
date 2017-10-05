@@ -1,53 +1,42 @@
-// class Delay {
-//   constructor(input, output){
-//     this.input = input;
-//     this.output = output;
-//
-//   }
-// }
-
-// DELAY UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
-let time = document.querySelector('#delayTime');
-let feedbackSlider = document.querySelector("#delayFeedback");
-let delayWetDryMix = document.querySelector("#delayWetDryMix");
-let delayBypass = document.querySelector("#delayBypass");
-let delayBypassStatus = false;
-let feedbackBypass = document.querySelector("#feedbackBypass");
-let feedbackBypassStatus = false;
-
-
-// THE AUDIO PROCESSESING
-if (navigator.mediaDevices.getUserMedia) {
-  console.log("yah buddy getUserMedia is down with the plan");
-  navigator.mediaDevices.getUserMedia({audio: { latency: 0.01,
-                                                echoCancellation: false,
-                                                mozNoiseSuppression: false,
-                                                mozAutoGainControl: false
-                                      }})
-  .then ((stream) => {
-    let audioCtx = new AudioContext();
-    let source = audioCtx.createMediaStreamSource(stream);
-
-// DELAY STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
-    let delay = audioCtx.createDelay(10.0); // this might be too long, check for memory slowness
-    delay.delayTime.value = "0.25"
-
-    let feedback = audioCtx.createGain();
+class Delay {
+  constructor(audioCtx, input, output){
+    this.input = input;
+    this.output = output;
+    this.audioCtx = audioCtx;
+    this.time = document.querySelector('#delayTime');
+    this.feedbackSlider = document.querySelector("#delayFeedback");
+    this.delayWetDryMix = document.querySelector("#delayWetDryMix");
+    this.delayBypass = document.querySelector("#delayBypass");
+    this.delayBypassStatus = false;
+    this.feedbackBypass = document.querySelector("#feedbackBypass");
+    this.feedbackBypassStatus = false;
+    this.delay = audioCtx.createDelay(10.0); // this might be too long, check for memory slowness
+    delay.delayTime.value = "0.25";
+    this.feedback = audioCtx.createGain();
     feedback.gain.value = 0.0;
+    this.delayMute = audioCtx.createGain();
+    delayMute.gain.value = 1.0;
+    this.feedbackMute = audioCtx.createGain();
+    feedbackMute.gain.value = 1.0;
+    this.delayPassThru = audioCtx.createGain();
+    delayPassThru.gain.value = 0.5;
+    this.delayMixMute = audioCtx.createGain();
+    delayMixMute.gain.value = 0.5;
 
-    let delayMute = audioCtx.createGain();
-    delayMute.gain.value = 1.0
+    // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
+    input.connect(delayMute);
+    input.connect(delayPassThru);
+    delayMute.connect(delay);
+    delay.connect(feedbackMute);
+    feedbackMute.connect(feedback);
+    feedback.connect(delay);
+    delay.connect(delayMixMute);
+    delayMixMute.connect(output)
+    delayPassThru.connect(output);
 
-    let feedbackMute = audioCtx.createGain();
-    feedbackMute.gain.value = 1.0
-
-    let delayPassThru = audioCtx.createGain();
-    delayPassThru.gain.value = 0.5
-
-    let delayMixMute = audioCtx.createGain();
-    delayMixMute.gain.value = 0.5
-
+    // UI XXXXXXXXXXXXXXXXXXXXXXXXX
     time.onchange = () => {
+      // this is getting moved over to the delay.kontrol.js, but I really don't want it that way
       console.log(parseFloat(time.value) / 100);
       delay.delayTime.value = parseFloat(time.value) / 100;
     };
@@ -80,23 +69,5 @@ if (navigator.mediaDevices.getUserMedia) {
         feedbackMute.gain.value = 1.0
       }
     }
-
-// DELAY ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    source.connect(delayMute);
-    source.connect(delayPassThru);
-    delayMute.connect(delay);
-    delay.connect(feedbackMute);
-    feedbackMute.connect(feedback);
-    feedback.connect(delay);
-    delay.connect(delayMixMute);
-    delayMixMute.connect(audioCtx.destination)
-    delayPassThru.connect(audioCtx.destination);
-
-  })
-  .catch(function(err) {
-        console.log('The following gUM error occured: ' + err);
-    });
-}
-else {
-    console.log('getUserMedia not supported round deez partz');
+  }
 }

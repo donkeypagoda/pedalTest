@@ -1,4 +1,5 @@
 // THE AUDIO PROCESSESING
+const audioCtx = new AudioContext();
 if (navigator.mediaDevices.getUserMedia) {
   console.log("yah buddy getUserMedia is down with the plan");
   navigator.mediaDevices.getUserMedia({audio: { latency: 0.01,
@@ -7,10 +8,11 @@ if (navigator.mediaDevices.getUserMedia) {
                                                 mozAutoGainControl: false
                                       }})
   .then ((stream) => {
-    let audioCtx = new AudioContext();
     let source = audioCtx.createMediaStreamSource(stream);
-    // 
 
+  })
+  .then((source) => {
+    return new Delay(audioCtx, source, audioCtx.destination);
   })
   .catch(function(err) {
         console.log('The following gUM error occured: ' + err);

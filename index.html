@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>PEDALBOARD TEST</title>
-    <script defer src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-    <script defer type="text/javascript" src="jquery.kontrol.js"></script>
+    <!-- <script defer src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script> -->
+    <!-- <script defer type="text/javascript" src="jquery.kontrol.js"></script> -->
     <script defer type="text/javascript" src="delay.js"></script>
-    <script defer type="text/javascript" src="delay.kontrol.js"></script>
+    <script defer type="text/javascript" src="main.js"></script>
+    <!-- <script defer type="text/javascript" src="delay.kontrol.js"></script> -->
     <!-- <script defer type="text/javascript" src="disto.js"></script> -->
     <!-- <script defer type="text/javascript" src="panner.js"></script> -->
-    <!-- <script defer type="text/javascript" src="main.js"></script> -->
 
     <link rel="stylesheet" href="main.css">
   </head>
@@ -19,7 +19,7 @@
       <hr>
       <div>
         <label>Delay Time
-          <input id="delayTime" class="dial" type="text" data-min="0" data-max="700" value="25">
+          <input id="delayTime" type="range" min="0.0" data-max="7.0" value="0.25">
         </label>
       </div>
       <div>
