@@ -1,11 +1,10 @@
-// DELAY UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
-let time = document.querySelector('#delayTime');
-let feedbackSlider = document.querySelector("#delayFeedback");
-let delayWetDryMix = document.querySelector("#delayWetDryMix");
-let delayBypass = document.querySelector("#delayBypass");
-let delayBypassStatus = false;
-let feedbackBypass = document.querySelector("#feedbackBypass");
-let feedbackBypassStatus = false;
+// DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
+let distoSat = document.querySelector('#distoSat')
+let distoOverdrive = document.querySelector("#distoOverdrive")
+let distoHPFfreq = document.querySelector("#distoHPFfreq")
+let distoLPFfreq = document.querySelector("#distoLPFfreq")
+let distoBypass = document.querySelector("#distoBypass")
+let distoBypassStatus = false;
 
 // THE AUDIO PROCESSESING
 if (navigator.mediaDevices.getUserMedia) {

@@ -1,3 +1,11 @@
+// class Delay {
+//   constructor(input, output){
+//     this.input = input;
+//     this.output = output;
+//
+//   }
+// }
+
 // DELAY UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
 let time = document.querySelector('#delayTime');
 let feedbackSlider = document.querySelector("#delayFeedback");
@@ -39,12 +47,11 @@ if (navigator.mediaDevices.getUserMedia) {
     let delayMixMute = audioCtx.createGain();
     delayMixMute.gain.value = 0.5
 
-    time.oninput = () => {
-      console.log(parseFloat(time.value));
-      delay.delayTime.value = parseFloat(time.value);
+    time.onchange = () => {
+      console.log(parseFloat(time.value) / 100);
+      delay.delayTime.value = parseFloat(time.value) / 100;
     };
     feedbackSlider.oninput = () => {
-      // console.log(feedbackSlider.value);
       feedback.gain.value = feedbackSlider.value;
     };
     delayWetDryMix.oninput = () => {
@@ -75,9 +82,8 @@ if (navigator.mediaDevices.getUserMedia) {
     }
 
 // DELAY ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    source.connect(distoLPF);
-    distoLPF.connect(delayMute);
-    distoLPF.connect(delayPassThru);
+    source.connect(delayMute);
+    source.connect(delayPassThru);
     delayMute.connect(delay);
     delay.connect(feedbackMute);
     feedbackMute.connect(feedback);
