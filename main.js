@@ -11,7 +11,7 @@ if (navigator.mediaDevices.getUserMedia) {
     let source = audioCtx.createMediaStreamSource(stream);
   })
   .then((source) => {
-    new Delay(audioCtx, source, audioCtx.destination);
+    return new Delay(audioCtx, source, audioCtx.destination);
   })
   .catch(function(err) {
         console.log('The following gUM error occured: ' + err);
