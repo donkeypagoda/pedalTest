@@ -9,6 +9,7 @@ if (navigator.mediaDevices.getUserMedia) {
                                       }})
   .then ((stream) => {
     const source = audioCtx.createMediaStreamSource(stream);
+    return source;
   })
   .then((source) => {
     return new Delay(audioCtx, source, audioCtx.destination);

@@ -24,24 +24,24 @@ class Delay {
     this.delayMixMute.gain.value = 0.5;
 
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
-    this.input.connect(delayMute);
-    this.input.connect(delayPassThru);
-    this.delayMute.connect(delay);
-    this.delay.connect(feedbackMute);
-    this.feedbackMute.connect(feedback);
-    this.feedback.connect(delay);
-    this.delay.connect(delayMixMute);
-    this.delayMixMute.connect(output)
-    this.delayPassThru.connect(output);
+    this.input.connect(this.delayMute);
+    this.input.connect(this.delayPassThru);
+    this.delayMute.connect(this.delay);
+    this.delay.connect(this.feedbackMute);
+    this.feedbackMute.connect(this.feedback);
+    this.feedback.connect(this.delay);
+    this.delay.connect(this.delayMixMute);
+    this.delayMixMute.connect(this.output)
+    this.delayPassThru.connect(this.output);
 
     // UI XXXXXXXXXXXXXXXXXXXXXXXXX
     this.time.onchange = () => {
       // this is getting moved over to the delay.kontrol.js, but I really don't want it that way
-      console.log(parseFloat(this.time.value) / 100);
-      delay.delayTime.value = parseFloat(this.time.value) / 100;
+      console.log(parseFloat(this.time.value));
+      this.delay.delayTime.value = parseFloat(this.time.value);
     };
     this.feedbackSlider.oninput = () => {
-      feedback.gain.value = this.feedbackSlider.value;
+      this.feedback.gain.value = this.feedbackSlider.value;
     };
     this.delayWetDryMix.oninput = () => {
       console.log(parseFloat(0.01 / this.delayWetDryMix.value));
