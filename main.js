@@ -8,10 +8,11 @@ if (navigator.mediaDevices.getUserMedia) {
                                                 mozAutoGainControl: false
                                       }})
   .then ((stream) => {
-    let source = audioCtx.createMediaStreamSource(stream);
+    const source = audioCtx.createMediaStreamSource(stream);
+    return source;
   })
   .then((source) => {
-    new Delay(audioCtx, source, audioCtx.destination);
+    return new Delay(audioCtx, source, audioCtx.destination);
   })
   .catch(function(err) {
         console.log('The following gUM error occured: ' + err);
