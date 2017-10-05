@@ -8,7 +8,7 @@ if (navigator.mediaDevices.getUserMedia) {
                                                 mozAutoGainControl: false
                                       }})
   .then ((stream) => {
-    let source = audioCtx.createMediaStreamSource(stream);
+    const source = audioCtx.createMediaStreamSource(stream);
   })
   .then((source) => {
     return new Delay(audioCtx, source, audioCtx.destination);

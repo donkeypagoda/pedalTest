@@ -1,8 +1,8 @@
 class Delay {
   constructor(audioCtx, input, output){
+    this.audioCtx = audioCtx;
     this.input = input;
     this.output = output;
-    this.audioCtx = audioCtx;
     this.time = document.querySelector('#delayTime');
     this.feedbackSlider = document.querySelector("#delayFeedback");
     this.delayWetDryMix = document.querySelector("#delayWetDryMix");
@@ -37,17 +37,17 @@ class Delay {
     // UI XXXXXXXXXXXXXXXXXXXXXXXXX
     this.time.onchange = () => {
       // this is getting moved over to the delay.kontrol.js, but I really don't want it that way
-      console.log(parseFloat(time.value) / 100);
-      delay.delayTime.value = parseFloat(time.value) / 100;
+      console.log(parseFloat(this.time.value) / 100);
+      delay.delayTime.value = parseFloat(this.time.value) / 100;
     };
     this.feedbackSlider.oninput = () => {
-      feedback.gain.value = feedbackSlider.value;
+      feedback.gain.value = this.feedbackSlider.value;
     };
     this.delayWetDryMix.oninput = () => {
-      console.log(parseFloat(0.01 / delayWetDryMix.value));
-      console.log(parseFloat(delayWetDryMix.value));
-      this.delayMixMute.gain.value = 0.01 / parseFloat(delayWetDryMix.value)
-      this.delayPassThru.gain.value = parseFloat(delayWetDryMix.value)
+      console.log(parseFloat(0.01 / this.delayWetDryMix.value));
+      console.log(parseFloat(this.delayWetDryMix.value));
+      this.delayMixMute.gain.value = 0.01 / parseFloat(this.delayWetDryMix.value)
+      this.delayPassThru.gain.value = parseFloat(this.delayWetDryMix.value)
     }
     this.delayBypass.onchange = () => {
       this.delayBypassStatus = !this.delayBypassStatus;
