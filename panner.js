@@ -3,6 +3,7 @@ class Panner {
     this.audioCtx = audioCtx;
     this.input = input;
     this.output = output;
+    this.bypass = false;
     // UI STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
     this.pannerSpeed = document.querySelector("#pannerSpeed");
     this.pannerWidth = document.querySelector("#pannerWidth");
@@ -10,21 +11,30 @@ class Panner {
     this.pannerBypass = document.querySelector("#pannerBypass");
     // PANNER GUTS XXXXXXXXXXXXXXXXXXXXXXXXX
     this.panner = audioCtx.createStereoPanner();
+    this.panner.pan.value = 0;
+    this.counter = 0;
+    this.pannerTable = Array.from(new Array(200), (x, i) => i/100 + -1.0);
+    console.log(this.pannerTable);
 
-    this.pannerOsc = this.audioCtx.createOscillator();
-    this.pannerOsc.start
 
-    // console.log(this.panner.positionX);
-    // this.pannerSpeed.oninput = () => {
-    //   this.pannerOsc.frequency.value = parseFloat(this.pannerSpeed.value);
-    //   this.pannerOsc.connect(this.panner.positionX)
-    //
-    //   console.log(this.pannerOsc.frequency.value);
-    // }
-    // temporary bullshit to try and figureout why the osciallator isn't changing the
+    this.pannerSpeed.oninput = () => {
+      clearInterval();
+      setInterval(this.panInc, parseInt(this.pannerSpeed.value))
+      console.log(parseInt(this.pannerSpeed.value));
+      this.panInc = () => {
+        this.panner.pan.value = this.pannerTable[this.counter++]
+        // console.log(-1 + (counter++* 0.01));
+        console.log(this.panner.pan.value)
+        if(this.count === this.pannerTable.length - 1) {
+          this.counter = 0;
+          // return this.panInc();
+        }
+      }
+    }
+
     this.pannerWidth.oninput = () => {
-      this.panner.pan.value = parseFloat(this.pannerWidth.value)
-      console.log(this.panner.pan.value);
+      // this.panner.pan.value = parseFloat(this.pannerWidth.value)
+      // console.log(this.panner.pan.value);
     }
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     this.input.connect(this.panner)
