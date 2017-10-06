@@ -1,3 +1,9 @@
+// class Disto {
+//   constructor(audioCtx, input, output){
+//
+//   }
+// }
+
 // DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
 let distoSat = document.querySelector('#distoSat')
 let distoOverdrive = document.querySelector("#distoOverdrive")
