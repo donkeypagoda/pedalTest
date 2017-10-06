@@ -8,7 +8,7 @@ $(function() {
       thickness: 0.3,
       change : function (value) {
           console.log("change : ", value);
-          disto1.curve = makeDistortionCurve(parseFloat(distoSat.value));
+          // disto1.curve = makeDistortionCurve(parseFloat(distoSat.value));
       }
 
       })

@@ -10,11 +10,16 @@ class Panner {
     this.pannerStartStop = document.querySelector("#pannerStartStop");
     this.pannerBypass = document.querySelector("#pannerBypass");
     // PANNER GUTS XXXXXXXXXXXXXXXXXXXXXXXXX
-    this.panner = audioCtx.createStereoPanner();
+    this.panner = this.audioCtx.createStereoPanner();
     this.panner.pan.value = 0;
-    this.counter = 0;
     this.pannerTable = Array.from(new Array(200), (x, i) => i/100 + -1.0);
-    console.log(this.pannerTable);
+    this.pannerTableRev = Array.from(new Array(200), (x, i) => 1.0 - i/100);
+    console.log(this.pannerTableRev);
+    this.osc = this.audioCtx.createOscillator();
+    // this.wave = this.audioCtx.createPeriodicWave(this.pannerTable, this.pannerTableRev);
+    console.log(this.osc);
+    // console.log(wave);
+    // this.counter = 0;
 
 
     this.pannerSpeed.oninput = () => {
