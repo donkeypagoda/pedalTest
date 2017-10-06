@@ -16,8 +16,8 @@ class Panner {
     this.panner.pan.value = 0;
 
     this.pannerWidth = [-1, 1];
-    this.pannerTable = Array.from(new Array(200), (x, i) => i/100 + this.pannerWidth[0]);
-    this.pannerTableRev = Array.from(new Array(201), (x, i) => this.pannerWidth[1] - i/100);
+    this.pannerTable = Array.from(new Array(50), (x, i) => i/25 + this.pannerWidth[0]);
+    this.pannerTableRev = Array.from(new Array(51), (x, i) => this.pannerWidth[1] - i/25);
     this.pannerFullTable = this.pannerTable.concat(this.pannerTableRev)
     console.log(this.pannerFullTable);
 
@@ -61,7 +61,11 @@ class Panner {
     }
 
     this.pannerWidthInput.oninput = () => {
-
+      // this.pannerWidth = [-this.pannerWidthInput.value, this.pannerWidthInput.value];
+      // this.pannerTable = Array.from(new Array(50), (x, i) => i/25 + this.pannerWidth[0]);
+      // this.pannerTableRev = Array.from(new Array(51), (x, i) => this.pannerWidth[1] - i/25);
+      // this.pannerFullTable = this.pannerTable.concat(this.pannerTableRev)
+      // console.log(this.pannerFullTable);
     }
 
     this.pannerBypass.onchange = () => {
