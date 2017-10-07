@@ -44,8 +44,8 @@ class Delay {
       this.feedback.gain.value = this.feedbackSlider.value;
     };
     this.delayWetDryMix.oninput = () => {
-      this.delayMixMute.gain.value = 0.1 / parseFloat(this.delayWetDryMix.value)
-      this.delayPassThru.gain.value = parseFloat(this.delayWetDryMix.value)
+      this.delayMixMute.gain.value = parseFloat(this.delayWetDryMix.value)
+      this.delayPassThru.gain.value = 0.1 / parseFloat(this.delayWetDryMix.value)
     }
     this.delayBypass.onchange = () => {
       this.bypass = !this.bypass;
