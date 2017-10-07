@@ -14,6 +14,7 @@ if (navigator.mediaDevices.getUserMedia) {
   .then((source) => {
     // return new Delay(audioCtx, source, audioCtx.destination);
     // return new Panner(audioCtx, source, audioCtx.destination);
+    // return new Reverb(audioCtx, input, audioCtx.destination);
     return new Disto(audioCtx, source, audioCtx.destination);
   })
   .catch(function(err) {
