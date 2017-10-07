@@ -31,6 +31,7 @@ class Reverb {
       }
     this.getImpulseResponse.send();
 
+
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     this.input.connect(this.reverbInputGain);
     this.input.connect(this.cleanGain);
@@ -40,7 +41,8 @@ class Reverb {
     this.reverbOutputGain.connect(this.output);
 
     this.reverbMix.oninput = () => {
-      this.reverbInputGain.gain.value = parseFloat(this.reverbMix.value);
+      // this.reverbInputGain.gain.value = parseFloat(this.reverbMix.value);
+      this.reverbOutputGain.gain.value = parseFloat(this.reverbMix.value);
       this.cleanGain.gain.value = 0.1 / parseFloat(this.reverbMix.value);
     }
 
@@ -48,20 +50,10 @@ class Reverb {
     this.reverbBypass.onchange = () => {
       this.bypass = !this.bypass;
       if (this.bypass) {
-        console.log(this.bypass);
-        this.input.connect(this.output);
-        // this makes it a hard bypass
-        this.reverbOutputGain.value = 0.0;
-
+        this.reverbOutputGain.gain.value = 0.0;
       }
       else {
-        this.input.connect(this.reverbGain);
-        this.input.connect(this.cleanGain);
-        this.reverbGain.connect(this.reverb);
-        this.cleanGain.connect(this.output);
-        this.reverb.connect(this.reverbOutputGain);
-        this.reverbOutputGain.connect(this.output);
-        this.reverbOutputGain.gain.value = 1.0;
+        this.reverbOutputGain.gain.value = parseFloat(this.reverbMix.value)
       }
     }
 
