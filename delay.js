@@ -8,7 +8,7 @@ class Delay {
     this.feedbackSlider = document.querySelector("#delayFeedback");
     this.delayWetDryMix = document.querySelector("#delayWetDryMix");
     this.delayBypass = document.querySelector("#delayBypass");
-    this.delayInputBypass = document.querySelector("#delayInputBypass")
+    this.delayInputBypass = document.querySelector("#delayInputBypass");
     this.delayInputBypassStatus = false;
     this.feedbackBypass = document.querySelector("#feedbackBypass");
     this.feedbackBypassStatus = false;
@@ -33,7 +33,7 @@ class Delay {
     this.feedbackMute.connect(this.feedback);
     this.feedback.connect(this.delay);
     this.delay.connect(this.delayMixMute);
-    this.delayMixMute.connect(this.output)
+    this.delayMixMute.connect(this.output);
     this.delayPassThru.connect(this.output);
 
     // UI XXXXXXXXXXXXXXXXXXXXXXXXX
@@ -44,9 +44,9 @@ class Delay {
       this.feedback.gain.value = this.feedbackSlider.value;
     };
     this.delayWetDryMix.oninput = () => {
-      this.delayMixMute.gain.value = parseFloat(this.delayWetDryMix.value)
-      this.delayPassThru.gain.value = 0.1 / parseFloat(this.delayWetDryMix.value)
-    }
+      this.delayMixMute.gain.value = parseFloat(this.delayWetDryMix.value);
+      this.delayPassThru.gain.value = 0.1 / parseFloat(this.delayWetDryMix.value);
+    };
     this.delayBypass.onchange = () => {
       this.bypass = !this.bypass;
       if(this.bypass){
@@ -67,7 +67,7 @@ class Delay {
         this.delayMute.gain.value = 1;
         this.feedbackMute.gain.value = 1;
       }
-    }
+    };
 
     this.feedbackBypass.onchange = () => {
       this.feedbackBypassStatus = !this.feedbackBypassStatus
@@ -77,7 +77,7 @@ class Delay {
       else{
         this.feedbackMute.gain.value = 1;
       }
-    }
+    };
 
     this.delayInputBypass.onchange = () => {
       this.delayInputBypassStatus = !this.delayInputBypassStatus
