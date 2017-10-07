@@ -14,8 +14,13 @@ if (navigator.mediaDevices.getUserMedia) {
   .then((source) => {
     // return new Delay(audioCtx, source, audioCtx.destination);
     // return new Panner(audioCtx, source, audioCtx.destination);
+<<<<<<< HEAD
     // return new Disto(audioCtx, source, audioCtx.destination);
     return new Reverb(audioCtx, source, audioCtx.destination);
+=======
+    // return new Reverb(audioCtx, input, audioCtx.destination);
+    return new Disto(audioCtx, source, audioCtx.destination);
+>>>>>>> disto
   })
   .catch(function(err) {
         console.log('The following gUM error occured: ' + err);
