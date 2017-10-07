@@ -1,16 +1,18 @@
-// class Disto {
-//   constructor(audioCtx, input, output){
-//
-//   }
-// }
+class Disto {
+  constructor(audioCtx, input, output){
+    this.audioCtx = audioCtx;
+    this.input = input;
+    this.distoSat = document.querySelector('#distoSat')
+    let distoOverdrive = document.querySelector("#distoOverdrive")
+    let distoHPFfreq = document.querySelector("#distoHPFfreq")
+    let distoLPFfreq = document.querySelector("#distoLPFfreq")
+    let distoBypass = document.querySelector("#distoBypass")
+    let distoBypassStatus = false;
+
+  }
+}
 
 // DISTO UI SHIT XXXXXXXXXXXXXXXXXXXXXXXXX
-let distoSat = document.querySelector('#distoSat')
-let distoOverdrive = document.querySelector("#distoOverdrive")
-let distoHPFfreq = document.querySelector("#distoHPFfreq")
-let distoLPFfreq = document.querySelector("#distoLPFfreq")
-let distoBypass = document.querySelector("#distoBypass")
-let distoBypassStatus = false;
 
 // THE AUDIO PROCESSESING
 if (navigator.mediaDevices.getUserMedia) {
