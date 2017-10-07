@@ -11,6 +11,7 @@ class Reverb {
     this.reverbLoPass = document.querySelector("#reverbLoPass");
     this.reverbInputBypass = document.querySelector("#reverbInputBypass");
     this.reverbBypass = document.querySelector("#reverbBypass");
+    this.reverbBypassStatus = false;
     this.reverb = this.audioCtx.createConvolver();
     this.reverbInputGain = this.audioCtx.createGain();
     this.reverbInputGain.gain.value = 0.5;
@@ -18,12 +19,18 @@ class Reverb {
     this.reverbOutputGain.gain.value = 1.0;
     this.cleanGain = this.audioCtx.createGain();
     this.cleanGain.gain.value = 0.5;
-    this.loPass = this.audioCtx.createBiquadFilter();
     this.hiPass = this.audioCtx.createBiquadFilter();
-    this.reverbChoice = "/media/concert-crowd.ogg"
+    this.hiPass.type = "highpass";
+    this.loPass = this.audioCtx.createBiquadFilter();
+    this.loPass.type = "lowpass";
+    this.reverbChoice = {
+      "plate": "/media/concert-crowd.ogg",
+      "hall": "/media/concert-crowd.ogg",
+      "dungeon": "/media/concert-crowd.ogg"
+    }
 
     this.getImpulseResponse = new XMLHttpRequest()
-      this.getImpulseResponse.open("GET", this.reverbChoice, true);
+      this.getImpulseResponse.open("GET", this.reverbChoice.plate, true);
       this.getImpulseResponse.responseType = "arraybuffer";
       this.getImpulseResponse.onload = () => {
         this.audioCtx.decodeAudioData(this.getImpulseResponse.response,
@@ -38,14 +45,53 @@ class Reverb {
     this.reverbInputGain.connect(this.reverb);
     this.cleanGain.connect(this.output);
     this.reverb.connect(this.reverbOutputGain);
-    this.reverbOutputGain.connect(this.output);
+    this.reverbOutputGain.connect(this.hiPass);
+    this.hiPass.connect(this.loPass);
+    this.loPass.connect(this.output);
+
+    this.reverbSelect.onchange = () => {
+      // console.log(this.reverbSelect.value);
+      this.getImpulseResponse = new XMLHttpRequest()
+        this.getImpulseResponse.open("GET", this.reverbChoice[this.reverbSelect.value], true);
+        this.getImpulseResponse.responseType = "arraybuffer";
+        this.getImpulseResponse.onload = () => {
+          this.audioCtx.decodeAudioData(this.getImpulseResponse.response,
+            (buffer) => { this.reverb.buffer = buffer });
+        }
+      this.getImpulseResponse.send();
+    }
+
+    this.reverbAmount.oninput = () => {
+      // console.log(parseFloat(this.reverbAmount.value));
+      this.reverbInputGain.gain.value = parseFloat(this.reverbAmount.value);
+    }
 
     this.reverbMix.oninput = () => {
-      // this.reverbInputGain.gain.value = parseFloat(this.reverbMix.value);
+      // console.log(parseFloat(this.reverbMix.value));
       this.reverbOutputGain.gain.value = parseFloat(this.reverbMix.value);
       this.cleanGain.gain.value = 0.1 / parseFloat(this.reverbMix.value);
     }
 
+    this.reverbLoPass.oninput = () => {
+      // console.log(parseFloat(this.reverbLoPass.value));
+      this.loPass.frequency.value = parseFloat(this.reverbLoPass.value);
+    }
+
+    this.reverbHiPass.oninput = () => {
+      // console.log(parseFloat(this.reverbHiPass.value));
+      this.hiPass.frequency.value = parseFloat(this.reverbHiPass.value);
+    }
+
+    this.reverbInputBypass.onchange = () => {
+      this.reverbBypassStatus = !this.reverbBypassStatus
+      if (this.reverbBypassStatus){
+        this.reverbInputGain.gain.value = 0.0;
+        // console.log(this.reverbBypassStatus);
+      }
+      else {
+        this.reverbInputGain.gain.value = parseFloat(this.reverbAmount.value);
+      }
+    }
 
     this.reverbBypass.onchange = () => {
       this.bypass = !this.bypass;
