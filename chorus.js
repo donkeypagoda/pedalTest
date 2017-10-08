@@ -24,14 +24,16 @@ class Chorus {
     this.chorusTableRev = Array.from(new Array(this.tableLength), (x, i) => this.depth - i * (this.depth * (1 / this.tableLength)));
     this.chorusTableFull = this.chorusTable.concat(this.chorusTableRev)
 
-    // console.log(this.chorusTable);
+    console.log(this.chorusTable);
 
     this.cycleDown = () => {
-      this.delayNode.delayTime.value += 0.01 * this.chorusTable[this.counter++];
+        this.delayNode.delayTime.value += 0.01 * this.chorusTable[this.counter++];
+        // if(this.counter === this.chorusTable.length){
+        //   this.counter = 0;
+        //   // fuck this is fucked
+        // }
+
       console.log(this.delayNode.delayTime.value);
-      if(this.counter === this.chorusTable.length - 1) {
-        this.delayNode.delayTime.value -= 0.01 * this.chorusTable[this.counter--];
-      }
     }
 
     //
