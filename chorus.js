@@ -38,8 +38,6 @@ class Chorus {
     this.input.connect(this.delayGain);
     this.delayGain.connect(this.delayNode);
     this.input.connect(this.cleanGain);
-    this.delayNode.connect(this.hiPass);
-    this.hiPass.connect(this.loPass);
     this.loPass.connect(this.output);
     this.cleanGain.connect(this.output);
 
@@ -81,8 +79,6 @@ class Chorus {
         this.input.connect(this.delayGain);
         this.delayGain.connect(this.delayNode);
         this.input.connect(this.cleanGain);
-        this.delayNode.connect(this.hiPass);
-        this.hiPass.connect(this.loPass);
         this.loPass.connect(this.output);
         this.cleanGain.connect(this.output);
 
