@@ -71,7 +71,7 @@ class Delay {
 
     this.feedbackBypass.onchange = () => {
       this.feedbackBypassStatus = !this.feedbackBypassStatus
-      if (feedbackBypassStatus) {
+      if (this.feedbackBypassStatus) {
         this.feedbackMute.gain.value = 0;
       }
       else{
