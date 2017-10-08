@@ -12,26 +12,32 @@ class Chorus {
     this.bypassControl = document.querySelector("#chorusBypass");
     this.delayNode = this.audioCtx.createDelay(1.0);
     this.delayNode.delayTime.value = 0.02;
-    this.depth = 15;
+    this.counter = 0;
+    this.depth = 5;
     this.speed = 500;
     this.chorusGo = true;
-    this.tableLength = 50;
-    this.chorusTable = Array.from(new Array(50), (x, i) => 1/(i + (this.depth/50)));
-    // this.chorusTable = Array.from(new Array(this.tableLength), (x, i) => i / ((this.tableLength + (Math.sqrt(this.depth))) / this.depth) + 1 / this.depth)
-    // this.chorusTable = Array.from(Array(this.depth),(x,i)=>i)
-    console.log(this.chorusTable);
+    this.tableLength = 25;
+    // is the line below cleaner than the one below it?  the whole thing could do with a good spin cycle
+    // this.chorusTable = Array.from(new Array(50), (x, i) => this.depth - i * (this.depth * 0.02));
 
-    this.cycle = () => {
-      this.delayNode.delayTime.linearRampToValueAtTime(this.delayNode.delayTime.value + this.depth, this.speed)
-      this.delayNode.delayTime.linearRampToValueAtTime(this.delayNode.delayTime.value - 2 * this.depth, this.speed)
-      if (this.chorusGo){
-        this.cycle();
+    this.chorusTable = Array.from(new Array(this.tableLength + 1), (x, i) => i * (this.depth * (1 / this.tableLength)));
+    this.chorusTableRev = Array.from(new Array(this.tableLength), (x, i) => this.depth - i * (this.depth * (1 / this.tableLength)));
+    this.chorusTableFull = this.chorusTable.concat(this.chorusTableRev)
+
+    // console.log(this.chorusTable);
+
+    this.cycleDown = () => {
+      this.delayNode.delayTime.value += 0.01 * this.chorusTable[this.counter++];
+      console.log(this.delayNode.delayTime.value);
+      if(this.counter === this.chorusTable.length - 1) {
+        this.delayNode.delayTime.value -= 0.01 * this.chorusTable[this.counter--];
       }
     }
 
-    // if (this.chorusGo){
-    //   this.intervalID = setInterval(this.cycle(), this.speed)
-    // }
+    //
+    if (this.chorusGo){
+      this.intervalID = setInterval(this.cycleDown, 250)
+    }
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
 
 
