@@ -6,12 +6,7 @@ class Chorus {
     this.bypass = false;
     this.depthControl = document.querySelector("#chorusDepth");
     this.speedControl = document.querySelector("#chorusSpeed");
-    this.mixControl = document.querySelector("#chorusMix");
-    this.hiPassControl = document.querySelector("#chorusHiPass");
-    this.loPassControl = document.querySelector("#chorusLoPass");
     this.bypassControl = document.querySelector("#chorusBypass");
-    this.splitter = this.audioCtx.createChannelSplitter(1);
-    this.merger = this.audioCtx.createChannelMerger(1);
     this.delayNode = this.audioCtx.createDelay(1.0);
     this.delayNode.delayTime.value = 0.02;
     this.delayGain = this.audioCtx.createGain();
@@ -38,7 +33,6 @@ class Chorus {
     this.chorusTableHalf = this.chorusTable.concat(this.chorusTableRev)
     this.chorusTableHalf2 = this.chorusTableRev.concat(this.chorusTable)
     this.chorusTableFull = this.chorusTableHalf.concat(this.chorusTableHalf2)
-    // console.log(this.chorusTableFull);
 
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     this.input.connect(this.delayGain);
@@ -51,7 +45,6 @@ class Chorus {
 
     this.cycle = () => {
       this.modVal += this.chorusTableFull[this.counter++];
-      // console.log(this.modVal);
       this.delayNode.delayTime.value = this.modVal * 0.0001
       console.log(this.delayNode.delayTime.value)
       if (this.counter === this.chorusTableFull.length){
@@ -76,19 +69,7 @@ class Chorus {
         this.intervalID = setInterval(this.cycle, this.speed);
       }
     }
-    this.mixControl.oninput = () => {
-      console.log(parseFloat(this.mixControl.value));
-      this.delayNode.gain.value = parseFloat(this.mixControl.value) + 0.1;
-      this.cleanGain.gain.value = 0.1 / parseFloat(this.mixControl.value)
-    }
-    this.hiPassControl.oninput = () => {
-      console.log(parseFloat(this.hiPassControl.value));
-      this.hiPass.frequency.value = parseFloat(this.hiPassControl.value);
-    }
-    this.loPassControl.oninput = () => {
-      console.log(parseFloat(this.loPassControl.value));
-      this.loPass.frequency.value = parseFloat(this.loPassControl.value);
-    }
+
     this.bypassControl.onchange = () => {
       this.bypass = !this.bypass;
       if (this.bypass) {
