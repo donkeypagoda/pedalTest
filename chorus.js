@@ -12,33 +12,35 @@ class Chorus {
     this.bypassControl = document.querySelector("#chorusBypass");
     this.delayNode = this.audioCtx.createDelay(1.0);
     this.delayNode.delayTime.value = 0.02;
+    // I had to do a BOATLOAD of funky ass shit to stay out of decimal land and avoid that javscript decimal bullshit
+    this.modulation = 200;
     this.counter = 0;
-    this.depth = 5;
+    this.depth = 50;
     this.speed = 500;
     this.chorusGo = true;
-    this.tableLength = 25;
-    // is the line below cleaner than the one below it?  the whole thing could do with a good spin cycle
-    // this.chorusTable = Array.from(new Array(50), (x, i) => this.depth - i * (this.depth * 0.02));
+    this.tableLength = 10;
 
-    this.chorusTable = Array.from(new Array(this.tableLength + 1), (x, i) => i * (this.depth * (1 / this.tableLength)));
-    this.chorusTableRev = Array.from(new Array(this.tableLength), (x, i) => this.depth - i * (this.depth * (1 / this.tableLength)));
-    this.chorusTableFull = this.chorusTable.concat(this.chorusTableRev)
+    this.chorusTable = Array.from(new Array(this.tableLength), (x, i) => this.depth / this.tableLength)
+    this.chorusTableRev = Array.from(new Array(this.tableLength), (x, i) => -this.depth / this.tableLength)
+    this.chorusTableHalf = this.chorusTable.concat(this.chorusTableRev)
+    this.chorusTableHalf2 = this.chorusTableRev.concat(this.chorusTable)
+    this.chorusTableFull = this.chorusTableHalf.concat(this.chorusTableHalf2)
 
-    console.log(this.chorusTable);
+    console.log(this.chorusTableFull);
 
-    this.cycleDown = () => {
-        this.delayNode.delayTime.value += 0.01 * this.chorusTable[this.counter++];
-        // if(this.counter === this.chorusTable.length){
-        //   this.counter = 0;
-        //   // fuck this is fucked
-        // }
-
-      console.log(this.delayNode.delayTime.value);
+    this.cycle = () => {
+      this.modulation += this.chorusTableFull[this.counter++];
+      // console.log(this.modulation);
+      this.delayNode.delayTime.value = this.modulation * 0.0001
+      console.log(this.delayNode.delayTime.value)
+      if (this.counter === this.chorusTableFull.length){
+        this.counter = 0;
+        this.cycle();
+      }
     }
 
-    //
     if (this.chorusGo){
-      this.intervalID = setInterval(this.cycleDown, 250)
+      this.intervalID = setInterval(this.cycle, this.speed)
     }
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
 
