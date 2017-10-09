@@ -13,7 +13,6 @@
  *
  * Thanks to vor, eskimoblood, spiffistan, FabrizioC
  */
- console.log("hairy dicks");
 (function($) {
 
     /**
