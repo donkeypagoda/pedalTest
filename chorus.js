@@ -1,8 +1,8 @@
 class Chorus {
-  constructor(audioCtx, input, output){
+  constructor(audioCtx, input){
     this.audioCtx = audioCtx;
     this.input = input;
-    this.output = output;
+    this.output;
     this.bypass = false;
     this.depthControl = document.querySelector("#chorusDepth");
     this.speedControl = document.querySelector("#chorusSpeed");
@@ -13,12 +13,10 @@ class Chorus {
     this.delayGain.gain.value = 0.7;
     this.cleanGain = this.audioCtx.createGain();
     this.cleanGain.gain.value = 0.5
-    this.hiPass = this.audioCtx.createBiquadFilter();
-    this.hiPass.type = "highpass";
-    this.hiPass.frequency.value = parseInt(this.hiPassControl.value);
-    this.loPass = this.audioCtx.createBiquadFilter();
-    this.loPass.type = "lowpass"
-    this.loPass.frequency.value = parseInt(this.loPassControl.value);
+    this.merger = this.audioCtx.createChannelMerger(1);
+    this.makeUpGain = this.audioCtx.createGain();
+    this.makeUpGain.gain.value = 1.5;
+
 
     // I had to do a BOATLOAD of funky ass shit to stay out of decimal land and avoid that javscript decimal bullshit
     this.modVal = 200;
@@ -37,9 +35,11 @@ class Chorus {
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     this.input.connect(this.delayGain);
     this.delayGain.connect(this.delayNode);
+    this.delayNode.connect(this.merger)
     this.input.connect(this.cleanGain);
-    this.loPass.connect(this.output);
-    this.cleanGain.connect(this.output);
+    this.cleanGain.connect(this.merger);
+    this.merger.connect(this.makeUpGain);
+    this.output = this.makeUpGain;
 
     this.cycle = () => {
       this.modVal += this.chorusTableFull[this.counter++];
@@ -78,10 +78,11 @@ class Chorus {
         this.intervalID = setInterval(this.cycle, this.speed)
         this.input.connect(this.delayGain);
         this.delayGain.connect(this.delayNode);
+        this.delayNode.connect(this.merger)
         this.input.connect(this.cleanGain);
-        this.loPass.connect(this.output);
-        this.cleanGain.connect(this.output);
-
+        this.cleanGain.connect(this.merger);
+        this.merger.connect(this.makeUpGain);
+        this.output = this.makeUpGain;
       }
     }
 

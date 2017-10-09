@@ -1,8 +1,8 @@
 class Disto {
-  constructor(audioCtx, input, output){
+  constructor(audioCtx, input){
     this.audioCtx = audioCtx;
     this.input = input;
-    this.output = output;
+    this.output;
     this.bypass = false;
 
     this.distoSat = document.querySelector('#distoSat')
@@ -41,7 +41,7 @@ class Disto {
     this.distoOver.connect(this.disto1)
     this.disto1.connect(this.distoHPF)
     this.distoHPF.connect(this.distoLPF)
-    this.distoLPF.connect(this.audioCtx.destination)
+    this.output = this.distoLPF
 
     this.distoSat.oninput = () => {
       // console.log(parseFloat(distoSat.value));
@@ -63,7 +63,7 @@ class Disto {
     this.distoBypass.oninput = () => {
       this.bypass = !this.bypass;
       if (this.bypass) {
-        this.input.connect(this.output)
+        this.output = this.input
         this.distoOver.gain.value = 0.0;
       }
       else {
@@ -72,7 +72,7 @@ class Disto {
         this.distoOver.connect(this.disto1)
         this.disto1.connect(this.distoHPF)
         this.distoHPF.connect(this.distoLPF)
-        this.distoLPF.connect(this.audioCtx.destination)
+        this.output = this.distoLPF
 
       }
     }

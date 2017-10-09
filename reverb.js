@@ -1,8 +1,8 @@
 class Reverb {
-  constructor(audioCtx, input, output){
+  constructor(audioCtx, input){
     this.audioCtx = audioCtx;
     this.input = input;
-    this.output = output;
+    this.output;
     this.bypass = false;
     this.reverbSelect = document.querySelector("#reverbSelect");
     this.reverbAmount = document.querySelector("#reverbAmount");
@@ -23,6 +23,7 @@ class Reverb {
     this.hiPass.type = "highpass";
     this.loPass = this.audioCtx.createBiquadFilter();
     this.loPass.type = "lowpass";
+    this.merger = this.audioCtx.createChannelMerger(1);
     this.reverbChoice = {
       "plate": "/media/concert-crowd.ogg",
       "hall": "/media/concert-crowd.ogg",
@@ -43,11 +44,12 @@ class Reverb {
     this.input.connect(this.reverbInputGain);
     this.input.connect(this.cleanGain);
     this.reverbInputGain.connect(this.reverb);
-    this.cleanGain.connect(this.output);
+    this.cleanGain.connect(this.merger);
     this.reverb.connect(this.reverbOutputGain);
     this.reverbOutputGain.connect(this.hiPass);
     this.hiPass.connect(this.loPass);
-    this.loPass.connect(this.output);
+    this.loPass.connect(this.merger);
+    this.output = this.merger;
 
     this.reverbSelect.onchange = () => {
       // console.log(this.reverbSelect.value);

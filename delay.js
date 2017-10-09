@@ -1,8 +1,8 @@
 class Delay {
-  constructor(audioCtx, input, output){
+  constructor(audioCtx, input){
     this.audioCtx = audioCtx;
     this.input = input;
-    this.output = output;
+    this.output;
     this.bypass = false;
     this.time = document.querySelector('#delayTime');
     this.feedbackSlider = document.querySelector("#delayFeedback");
@@ -24,6 +24,7 @@ class Delay {
     this.delayPassThru.gain.value = 0.5;
     this.delayMixMute = audioCtx.createGain();
     this.delayMixMute.gain.value = 0.5;
+    this.merger = this.audioCtx.createChannelMerger(1);
 
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     this.input.connect(this.delayMute);
@@ -33,8 +34,9 @@ class Delay {
     this.feedbackMute.connect(this.feedback);
     this.feedback.connect(this.delay);
     this.delay.connect(this.delayMixMute);
-    this.delayMixMute.connect(this.output);
-    this.delayPassThru.connect(this.output);
+    this.delayMixMute.connect(this.merger);
+    this.delayPassThru.connect(this.merger);
+    this.output = this.merger;
 
     // UI XXXXXXXXXXXXXXXXXXXXXXXXX
     this.time.onchange = () => {
@@ -62,8 +64,9 @@ class Delay {
         this.feedbackMute.connect(this.feedback);
         this.feedback.connect(this.delay);
         this.delay.connect(this.delayMixMute);
-        this.delayMixMute.connect(this.output)
-        this.delayPassThru.connect(this.output);
+        this.delayMixMute.connect(this.merger)
+        this.delayPassThru.connect(this.merger);
+        this.output = this.merger;
         this.delayMute.gain.value = 1;
         this.feedbackMute.gain.value = 1;
       }

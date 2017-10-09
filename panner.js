@@ -1,13 +1,13 @@
 class Panner {
-  constructor(audioCtx, input, output){
+  constructor(audioCtx, input){
     this.audioCtx = audioCtx;
     this.input = input;
-    this.output = output;
+    this.output;
     this.bypass = false;
     // UI STUFF XXXXXXXXXXXXXXXXXXXXXXXXX
     this.pannerSpeedInput = document.querySelector("#pannerSpeed");
     this.pannerSpeed = 500;
-    this.pannerWidthInput = document.querySelector("#pannerWidth");
+    // this.pannerWidthInput = document.querySelector("#pannerWidth");
     this.pannerStartStop = document.querySelector("#pannerStartStop");
     this.pannerGo = true;
     this.pannerBypass = document.querySelector("#pannerBypass");
@@ -19,13 +19,13 @@ class Panner {
     this.pannerTable = Array.from(new Array(50), (x, i) => i/25 + this.pannerWidth[0]);
     this.pannerTableRev = Array.from(new Array(51), (x, i) => this.pannerWidth[1] - i/25);
     this.pannerFullTable = this.pannerTable.concat(this.pannerTableRev)
-    console.log(this.pannerFullTable);
+    // console.log(this.pannerFullTable);
 
     this.counter = 0;
 
     // ROUTING XXXXXXXXXXXXXXXXXXXXXXXXX
     this.input.connect(this.panner)
-    this.panner.connect(this.output)
+    this.output = this.panner
 
     // THE ACTION XXXXXXXXXXXXXXXXXXXXXXXXX
     this.panInc = () => {
@@ -60,22 +60,22 @@ class Panner {
       }
     }
 
-    this.pannerWidthInput.oninput = () => {
+    // this.pannerWidthInput.oninput = () => {
       // this.pannerWidth = [-this.pannerWidthInput.value, this.pannerWidthInput.value];
       // this.pannerTable = Array.from(new Array(50), (x, i) => i/25 + this.pannerWidth[0]);
       // this.pannerTableRev = Array.from(new Array(51), (x, i) => this.pannerWidth[1] - i/25);
       // this.pannerFullTable = this.pannerTable.concat(this.pannerTableRev)
       // console.log(this.pannerFullTable);
-    }
+    // }
 
     this.pannerBypass.onchange = () => {
       this.bypass = !this.bypass
       if (this.bypass) {
-        this.input.connect(this.output)
+        this.output = this.input;
       }
       else {
         this.input.connect(this.panner)
-        this.panner.connect(this.output)
+        this.output = this.panner
       }
     }
 
