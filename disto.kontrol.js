@@ -1,7 +1,7 @@
 $(function() {
   'use strict';
 
-  $("#distoSat")
+  $(".dial")
     .dial({
       fgColor:"#222222",
       bgColor:"#EEEEEE",
