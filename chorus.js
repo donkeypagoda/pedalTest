@@ -85,8 +85,5 @@ class Chorus {
         this.output = this.makeUpGain;
       }
     }
-
-
-
   }
 }
